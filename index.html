@@ -42,101 +42,13 @@
     <p>Android: DYNAMIC MODEL: solidowrks to glb</p>
     <model-viewer
     src="assets/Test01.glb" 
+    ios-src="assets/Test01-fbx-to-usd.usdc" 
     autoplay 
     ar 
     ar-modes="webxr scene-viewer quick-look" 
     ar-scale="auto" 
     camera-controls>
     </model-viewer>
-    
-    <p>iOS: DYNAMIC MODEL: solidowrks to glb to blender to usdz</p>
-    <model-viewer
-    ios-src="assets/Test01.usdz" 
-    autoplay 
-    ar 
-    ar-modes="webxr scene-viewer quick-look" 
-    ar-scale="auto" 
-    camera-controls>
-    </model-viewer>   
-
-    Below this three.js implemntation for the obj files
-
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/loaders/OBJLoader.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/loaders/MTLLoader.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/loaders/RGBELoader.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/loaders/PMREMGenerator.js"></script>
-    <script>
-        // Set up the scene, camera, and renderer
-        const scene = new THREE.Scene();
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-        const renderer = new THREE.WebGLRenderer();
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.toneMapping = THREE.ACESFilmicToneMapping; // Use ACES tone mapping for HDR
-        renderer.outputEncoding = THREE.sRGBEncoding; // Ensure correct color encoding
-        document.body.appendChild(renderer.domElement);
-
-        // Load HDR environment map
-        const pmremGenerator = new THREE.PMREMGenerator(renderer);
-        pmremGenerator.compileEquirectangularShader();
-
-        const rgbeLoader = new THREE.RGBELoader();
-        rgbeLoader.setDataType(THREE.UnsignedByteType); // For web compatibility
-        rgbeLoader.load('assets/obj-files/composite.3-point-beige.hdr', (texture) => {
-            const envMap = pmremGenerator.fromEquirectangular(texture).texture;
-            scene.environment = envMap;
-            scene.background = envMap;
-            texture.dispose();
-            pmremGenerator.dispose();
-
-            // Load .obj model after HDR is loaded
-            loadModel();
-        });
-
-        // Function to load the OBJ model
-        function loadModel() {
-            const objLoader = new THREE.OBJLoader();
-            const mtlLoader = new THREE.MTLLoader();
-
-            // Load material file (optional)
-            mtlLoader.load('assets/obj-files/composite.mtl', (materials) => {
-                materials.preload();
-                objLoader.setMaterials(materials);
-
-                // Load the object with materials
-                objLoader.load('assets/obj-files/composite.obj', (object) => {
-                    scene.add(object);
-                    object.position.set(0, -10, 0); // Adjust position as needed
-                });
-            });
-        }
-
-        // Camera position
-        camera.position.z = 50;
-
-        // Animation loop
-        function animate() {
-            requestAnimationFrame(animate);
-
-            // Add some rotation for visualization
-            scene.rotation.y += 0.01;
-
-            renderer.render(scene, camera);
-        }
-
-        animate();
-
-        // Handle window resizing
-        window.addEventListener('resize', () => {
-            const width = window.innerWidth;
-            const height = window.innerHeight;
-
-            renderer.setSize(width, height);
-            camera.aspect = width / height;
-            camera.updateProjectionMatrix();
-        });
-    </script>
 
 
 
